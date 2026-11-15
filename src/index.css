@@ -1,4 +1,3 @@
-
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
 @tailwind base;
@@ -52,4 +51,79 @@ a:focus-visible {
 ::selection {
   color: #ffffff;
   background: #4f46e5;
+}
+
+
+
+/* =====================================
+   SMARTCV ACCESSIBILITY FOUNDATION
+===================================== */
+
+/* Visible keyboard focus */
+:focus-visible {
+  outline: 3px solid #6366f1;
+  outline-offset: 3px;
+}
+
+/* Don't show keyboard outlines for ordinary mouse clicks */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Better text selection */
+::selection {
+  background-color: #c7d2fe;
+  color: #1e1b4b;
+}
+
+/* Accessible disabled controls */
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+/* Consistent validation feedback */
+[aria-invalid="true"] {
+  border-color: #dc2626;
+}
+
+/* Reduced motion preference from the operating system */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast preference */
+@media (prefers-contrast: more) {
+
+  input,
+  textarea,
+  select,
+  button {
+    border-width: 2px;
+  }
+
+  a {
+    text-decoration: underline;
+  }
+}
+
+/* Ensure interactive targets are usable on touch screens */
+@media (max-width: 640px) {
+
+  button,
+  input,
+  select {
+    min-height: 42px;
+  }
 }

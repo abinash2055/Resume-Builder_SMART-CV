@@ -22,12 +22,52 @@ const createInitialState = () => ({
   sections: createDefaultSections(),
 });
 
+const validColors = /^#[0-9a-fA-F]{6}$/;
+
+const settingValidators = {
+  fontFamily: (value) =>
+    ["Inter", "Arial", "Roboto", "Georgia", "Times New Roman"].includes(value),
+
+  fontSize: (value) => Number.isFinite(value) && value >= 8 && value <= 16,
+  headingSize: (value) => Number.isFinite(value) && value >= 10 && value <= 24,
+  nameSize: (value) => Number.isFinite(value) && value >= 18 && value <= 40,
+
+  accentColor: (value) => typeof value === "string" && validColors.test(value),
+  textColor: (value) => typeof value === "string" && validColors.test(value),
+
+  pageSize: (value) => ["A4", "Letter"].includes(value),
+  orientation: (value) => ["portrait", "landscape"].includes(value),
+  columns: (value) => [1, 2].includes(value),
+
+  lineSpacing: (value) =>
+    Number.isFinite(value) && value >= 1 && value <= 2,
+
+  showProfileImage: (value) => typeof value === "boolean",
+  showContactIcons: (value) => typeof value === "boolean",
+  showPageNumbers: (value) => typeof value === "boolean",
+  highContrast: (value) => typeof value === "boolean",
+  largerControls: (value) => typeof value === "boolean",
+  reduceMotion: (value) => typeof value === "boolean",
+};
+
+const validateSetting = (key, value) => {
+  const validator = settingValidators[key];
+
+  if (validator) return validator(value);
+
+  const marginMatch = key.match(/^margins\.(top|bottom|left|right)$/);
+
+  if (marginMatch) {
+    return Number.isFinite(value) && value >= 5 && value <= 35;
+  }
+
+  return false;
+};
+
 export const useResumeStore = create((set, get) => ({
   ...createInitialState(),
 
-  // --------------------------------
   // RESUME FIELD MANAGEMENT
-  // --------------------------------
 
   updateResumeField: (path, value) => {
     set((state) => ({
@@ -43,9 +83,7 @@ export const useResumeStore = create((set, get) => ({
     set({ resume: structuredClone(newResume) });
   },
 
-  // --------------------------------
   // REPEATED SECTION MANAGEMENT
-  // --------------------------------
 
   addEntry: (sectionName, fields = {}) => {
     const entry = createEntry(fields);
@@ -78,9 +116,7 @@ export const useResumeStore = create((set, get) => ({
         resume: {
           ...state.resume,
           [sectionName]: currentEntries.map((entry) =>
-            entry.id === entryId
-              ? { ...entry, ...updates }
-              : entry
+            entry.id === entryId ? { ...entry, ...updates } : entry
           ),
         },
       };
@@ -123,9 +159,7 @@ export const useResumeStore = create((set, get) => ({
     });
   },
 
-  // --------------------------------
-  // SKILL MANAGEMENT
-  // --------------------------------
+  // SKILLS
 
   addSkill: (category, skillName) => {
     const skill = skillName.trim();
@@ -189,9 +223,7 @@ export const useResumeStore = create((set, get) => ({
     }));
   },
 
-  // --------------------------------
   // SECTION VISIBILITY
-  // --------------------------------
 
   toggleSectionVisibility: (sectionId) => {
     set((state) => ({
@@ -213,9 +245,7 @@ export const useResumeStore = create((set, get) => ({
     }));
   },
 
-  // --------------------------------
   // SECTION ORDER
-  // --------------------------------
 
   reorderSections: (activeId, overId) => {
     set((state) => {
@@ -255,9 +285,7 @@ export const useResumeStore = create((set, get) => ({
     }));
   },
 
-  // --------------------------------
   // CUSTOM SECTIONS
-  // --------------------------------
 
   addCustomSection: (title) => {
     const trimmedTitle = title.trim();
@@ -285,9 +313,7 @@ export const useResumeStore = create((set, get) => ({
       resume: {
         ...state.resume,
         customSections: state.resume.customSections.map((section) =>
-          section.id === sectionId
-            ? { ...section, ...updates }
-            : section
+          section.id === sectionId ? { ...section, ...updates } : section
         ),
       },
     }));
@@ -304,30 +330,62 @@ export const useResumeStore = create((set, get) => ({
     }));
   },
 
-  // --------------------------------
-  // RESUME DESIGN SETTINGS
-  // --------------------------------
+  // DESIGN SETTINGS
 
   updateSetting: (path, value) => {
+    if (!validateSetting(path, value)) return;
+
     set((state) => ({
       settings: updateObject(state.settings, path, value),
     }));
   },
 
   updateSettings: (updates) => {
+    if (!updates || typeof updates !== "object") return;
+
+    set((state) => {
+      let nextSettings = state.settings;
+
+      Object.entries(updates).forEach(([key, value]) => {
+        if (key === "margins" && value && typeof value === "object") {
+          Object.entries(value).forEach(([side, margin]) => {
+            const path = `margins.${side}`;
+
+            if (validateSetting(path, margin)) {
+              nextSettings = updateObject(nextSettings, path, margin);
+            }
+          });
+
+          return;
+        }
+
+        if (validateSetting(key, value)) {
+          nextSettings = updateObject(nextSettings, key, value);
+        }
+      });
+
+      return { settings: nextSettings };
+    });
+  },
+
+  // TEMPLATE MANAGEMENT
+
+  selectTemplate: (templateId) => {
+    const template = TEMPLATE_CONFIG.find(
+      (item) => item.id === templateId
+    );
+
+    if (!template) return;
+
     set((state) => ({
       settings: {
         ...state.settings,
-        ...updates,
+        template: template.id,
       },
     }));
   },
 
-  // --------------------------------
-  // TEMPLATE MANAGEMENT
-  // --------------------------------
-
-  selectTemplate: (templateId) => {
+  resetTemplateStyle: (templateId) => {
     const template = TEMPLATE_CONFIG.find(
       (item) => item.id === templateId
     );
@@ -345,9 +403,7 @@ export const useResumeStore = create((set, get) => ({
     }));
   },
 
-  // --------------------------------
   // RESET MANAGEMENT
-  // --------------------------------
 
   resetResume: () => {
     set({
@@ -356,6 +412,32 @@ export const useResumeStore = create((set, get) => ({
       sections: createDefaultSections(),
     });
   },
+
+
+  replaceSections: (newSections) => {
+    if (!Array.isArray(newSections)) {
+      throw new Error("Invalid sections data.");
+    }
+
+    const validSections = newSections.every(
+      (section) =>
+        section &&
+        typeof section.id === "string" &&
+        typeof section.title === "string" &&
+        typeof section.visible === "boolean"
+    );
+
+    if (!validSections) {
+      throw new Error("One or more sections are invalid.");
+    }
+
+    set({
+      sections: structuredClone(newSections),
+    });
+
+    return true;
+  },
+
 
   getResumeSnapshot: () => {
     const { resume, settings, sections } = get();
@@ -367,3 +449,4 @@ export const useResumeStore = create((set, get) => ({
     });
   },
 }));
+
