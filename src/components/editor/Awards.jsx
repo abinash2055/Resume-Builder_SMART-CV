@@ -1,6 +1,12 @@
 
-import { Plus, Trash2, Trophy } from "lucide-react";
+import {
+  Plus,
+  Trash2,
+  Trophy,
+} from "lucide-react";
+
 import { useResumeStore } from "../../store/resumeStore";
+import useEntryValidation from "../../hooks/useEntryValidation";
 
 const emptyAward = {
   title: "",
@@ -9,19 +15,41 @@ const emptyAward = {
   description: "",
 };
 
-function Field({ label, value, onChange, placeholder = "", type = "text" }) {
+function Field({
+  label,
+  value,
+  onChange,
+  onBlur,
+  placeholder = "",
+  type = "text",
+  error,
+  maxLength,
+}) {
   return (
     <div>
       <label className="mb-1.5 block text-sm font-medium text-slate-700">
         {label}
       </label>
+
       <input
         type={type}
         value={value ?? ""}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={onChange}
+        onBlur={onBlur}
         placeholder={placeholder}
-        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+        maxLength={maxLength}
+        aria-invalid={Boolean(error)}
+        className={`w-full rounded-lg border bg-white px-3 py-2.5 text-sm outline-none transition focus:ring-2 ${error
+            ? "border-red-400 focus:border-red-500 focus:ring-red-100"
+            : "border-slate-300 focus:border-indigo-500 focus:ring-indigo-100"
+          }`}
       />
+
+      {error && (
+        <p className="mt-1 text-xs text-red-600" role="alert">
+          {error}
+        </p>
+      )}
     </div>
   );
 }
@@ -31,28 +59,83 @@ export default function Awards() {
     (state) => state.resume.awards
   ) ?? [];
 
-  const addEntry = useResumeStore((state) => state.addEntry);
-  const updateEntry = useResumeStore((state) => state.updateEntry);
-  const removeEntry = useResumeStore((state) => state.removeEntry);
+  const addEntry = useResumeStore(
+    (state) => state.addEntry
+  );
 
+  const updateEntry = useResumeStore(
+    (state) => state.updateEntry
+  );
+
+  const removeEntry = useResumeStore(
+    (state) => state.removeEntry
+  );
+
+  // Entry validation
+  const {
+    errorsByEntry,
+    validateField,
+    clearEntryErrors,
+  } = useEntryValidation("awards");
+
+  // Add award
   const handleAdd = () => {
     addEntry("awards", { ...emptyAward });
   };
 
+  // Update award
   const handleUpdate = (id, field, value) => {
-    updateEntry("awards", id, { [field]: value });
+    updateEntry("awards", id, {
+      [field]: value,
+    });
+
+    const currentEntry = awards.find(
+      (item) => item.id === id
+    );
+
+    if (currentEntry) {
+      validateField(
+        id,
+        currentEntry,
+        field,
+        value
+      );
+    }
+  };
+
+  // Validate on blur
+  const handleBlur = (item, field, value) => {
+    validateField(
+      item.id,
+      item,
+      field,
+      value
+    );
+  };
+
+  // Remove award
+  const handleRemove = (id) => {
+    clearEntryErrors(id);
+    removeEntry("awards", id);
   };
 
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+
+      {/* Section Header */}
       <div className="mb-5 flex items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
-            <Trophy size={20} className="text-indigo-600" />
+            <Trophy
+              size={20}
+              className="text-indigo-600"
+            />
+
             <h2 className="text-lg font-semibold text-slate-900">
               Awards & Achievements
             </h2>
           </div>
+
           <p className="mt-1 text-sm text-slate-500">
             Highlight your awards, honors, and recognitions.
           </p>
@@ -68,82 +151,173 @@ export default function Awards() {
         </button>
       </div>
 
+      {/* Empty State */}
       {awards.length === 0 ? (
         <div className="rounded-xl border border-dashed border-slate-300 px-4 py-8 text-center">
           <p className="text-sm text-slate-500">
             No awards or achievements added yet.
           </p>
+
           <p className="mt-1 text-xs text-slate-400">
             Click Add to include an award or achievement.
           </p>
         </div>
       ) : (
+
+        /* Award Entries */
         <div className="space-y-5">
-          {awards.map((item, index) => (
-            <div
-              key={item.id}
-              className="rounded-xl border border-slate-200 p-4"
-            >
-              <div className="mb-4 flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-slate-800">
-                  Award {index + 1}
-                </h3>
+          {awards.map((item, index) => {
+            const entryErrors =
+              errorsByEntry[item.id] || {};
 
-                <button
-                  type="button"
-                  onClick={() => removeEntry("awards", item.id)}
-                  aria-label={`Remove award ${index + 1}`}
-                  className="rounded-lg p-2 text-red-500 transition hover:bg-red-50"
-                >
-                  <Trash2 size={17} />
-                </button>
-              </div>
+            return (
+              <div
+                key={item.id}
+                className="rounded-xl border border-slate-200 p-4"
+              >
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <Field
-                  label="Award / Achievement Name"
-                  value={item.title}
-                  onChange={(value) =>
-                    handleUpdate(item.id, "title", value)
-                  }
-                  placeholder="e.g. Best Project Award"
-                />
+                {/* Entry Header */}
+                <div className="mb-4 flex items-center justify-between">
+                  <h3 className="text-sm font-semibold text-slate-800">
+                    Award {index + 1}
+                  </h3>
 
-                <Field
-                  label="Issuing Organization"
-                  value={item.issuer}
-                  onChange={(value) =>
-                    handleUpdate(item.id, "issuer", value)
-                  }
-                  placeholder="e.g. University or Organization"
-                />
+                  <button
+                    type="button"
+                    onClick={() => handleRemove(item.id)}
+                    aria-label={`Remove award ${index + 1}`}
+                    className="rounded-lg p-2 text-red-500 transition hover:bg-red-50"
+                  >
+                    <Trash2 size={17} />
+                  </button>
+                </div>
 
-                <Field
-                  label="Date Received"
-                  type="month"
-                  value={item.date}
-                  onChange={(value) =>
-                    handleUpdate(item.id, "date", value)
-                  }
-                />
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 
-                <div className="sm:col-span-2">
-                  <label className="mb-1.5 block text-sm font-medium text-slate-700">
-                    Description (Optional)
-                  </label>
-                  <textarea
-                    rows={3}
-                    value={item.description ?? ""}
+                  {/* Award Name */}
+                  <Field
+                    label="Award / Achievement Name"
+                    value={item.title}
                     onChange={(e) =>
-                      handleUpdate(item.id, "description", e.target.value)
+                      handleUpdate(
+                        item.id,
+                        "title",
+                        e.target.value
+                      )
                     }
-                    placeholder="Describe why you received this award or what you achieved..."
-                    className="w-full resize-y rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                    onBlur={(e) =>
+                      handleBlur(
+                        item,
+                        "title",
+                        e.target.value
+                      )
+                    }
+                    placeholder="e.g. Best Project Award"
+                    error={entryErrors.title}
+                    maxLength={200}
                   />
+
+                  {/* Issuer */}
+                  <Field
+                    label="Issuing Organization"
+                    value={item.issuer}
+                    onChange={(e) =>
+                      handleUpdate(
+                        item.id,
+                        "issuer",
+                        e.target.value
+                      )
+                    }
+                    onBlur={(e) =>
+                      handleBlur(
+                        item,
+                        "issuer",
+                        e.target.value
+                      )
+                    }
+                    placeholder="e.g. University or Organization"
+                    error={entryErrors.issuer}
+                    maxLength={200}
+                  />
+
+                  {/* Date */}
+                  <Field
+                    label="Date Received"
+                    type="month"
+                    value={item.date}
+                    onChange={(e) =>
+                      handleUpdate(
+                        item.id,
+                        "date",
+                        e.target.value
+                      )
+                    }
+                    onBlur={(e) =>
+                      handleBlur(
+                        item,
+                        "date",
+                        e.target.value
+                      )
+                    }
+                    error={entryErrors.date}
+                  />
+
+                  {/* Description */}
+                  <div className="sm:col-span-2">
+                    <label className="mb-1.5 block text-sm font-medium text-slate-700">
+                      Description (Optional)
+                    </label>
+
+                    <textarea
+                      rows={3}
+                      value={item.description ?? ""}
+                      onChange={(e) =>
+                        handleUpdate(
+                          item.id,
+                          "description",
+                          e.target.value
+                        )
+                      }
+                      onBlur={(e) =>
+                        handleBlur(
+                          item,
+                          "description",
+                          e.target.value
+                        )
+                      }
+                      maxLength={3000}
+                      aria-invalid={Boolean(
+                        entryErrors.description
+                      )}
+                      placeholder="Describe why you received this award or what you achieved..."
+                      className={`w-full resize-y rounded-lg border bg-white px-3 py-2.5 text-sm outline-none transition focus:ring-2 ${entryErrors.description
+                          ? "border-red-400 focus:border-red-500 focus:ring-red-100"
+                          : "border-slate-300 focus:border-indigo-500 focus:ring-indigo-100"
+                        }`}
+                    />
+
+                    <div className="mt-1 flex items-center justify-between">
+                      {entryErrors.description ? (
+                        <p
+                          className="text-xs text-red-600"
+                          role="alert"
+                        >
+                          {entryErrors.description}
+                        </p>
+                      ) : (
+                        <span />
+                      )}
+
+                      <span className="text-xs text-slate-400">
+                        {(item.description || "").length}/3000
+                      </span>
+                    </div>
+                  </div>
+
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </section>

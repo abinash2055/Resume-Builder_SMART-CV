@@ -4,6 +4,9 @@ import { UserRound } from "lucide-react";
 import Input from "../common/Input";
 import SectionCard from "../common/SectionCard";
 
+import useFormValidation from "../../hooks/useFormValidation";
+import { personalInfoSchema } from "../../utils/resumeValidation";
+
 function PersonalDetails() {
     const personalInfo = useResumeStore(
         (state) => state.resume.personalInfo
@@ -18,6 +21,12 @@ function PersonalDetails() {
 
         updateResumeField(`personalInfo.${name}`, value);
     };
+
+    const {
+        errors,
+        validateField,
+        validateAll,
+    } = useFormValidation(personalInfoSchema);
 
     return (
         <SectionCard
@@ -56,9 +65,18 @@ function PersonalDetails() {
                     label="Email Address"
                     name="email"
                     type="email"
-                    value={personalInfo.email}
-                    onChange={handleChange}
-                    placeholder="example@email.com"
+                    value={personalInfo.email || ""}
+                    onChange={(event) => {
+                        const value = event.target.value;
+
+                        updateResumeField("personalInfo.email", value);
+                        validateField("email", value);
+                    }}
+                    onBlur={(event) => {
+                        validateField("email", event.target.value);
+                    }}
+                    placeholder="Enter your email"
+                    error={errors.email}
                 />
 
                 <Input
@@ -73,10 +91,19 @@ function PersonalDetails() {
                 <Input
                     label="Website"
                     name="website"
-                    type="url"
-                    value={personalInfo.website}
-                    onChange={handleChange}
+                    type="text"
+                    value={personalInfo.website || ""}
+                    onChange={(event) => {
+                        const value = event.target.value;
+
+                        updateResumeField("personalInfo.website", value);
+                        validateField("website", value);
+                    }}
+                    onBlur={(event) => {
+                        validateField("website", event.target.value);
+                    }}
                     placeholder="https://example.com"
+                    error={errors.website}
                 />
 
                 <Input
