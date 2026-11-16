@@ -55,7 +55,7 @@
 /* CLASSIC */
 
 .resume-paper[data-resume-template="classic"] {
-    font-family: Georgia, "Times New Roman", serif !important;
+    font-family: Georgia, "Times New Roman", serif;
 }
 
 .resume-paper[data-resume-template="classic"] h1 {
@@ -103,6 +103,370 @@
 .resume-paper[data-resume-template="compact"] ul {
     padding-left: 14px;
 }
+
+
+/* =====================================
+   ADDITIONAL SMARTCV TEMPLATES
+===================================== */
+
+/* EXECUTIVE */
+
+.resume-paper[data-resume-template="executive"] {
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+.resume-paper[data-resume-template="executive"] header {
+    text-align: center;
+    padding-bottom: 18px;
+    margin-bottom: 22px;
+    border-bottom: 3px double var(--resume-accent-color);
+}
+
+.resume-paper[data-resume-template="executive"] h1 {
+    font-size: 2em;
+    font-weight: 700;
+    letter-spacing: 0.025em;
+}
+
+.resume-paper[data-resume-template="executive"] h2 {
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--resume-accent-color);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+/* CORPORATE */
+
+.resume-paper[data-resume-template="corporate"] header {
+    padding: 18px;
+    margin-bottom: 22px;
+    border-left: 5px solid var(--resume-accent-color);
+    background: #f8fafc;
+}
+
+.resume-paper[data-resume-template="corporate"] h1 {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.resume-paper[data-resume-template="corporate"] h2 {
+    padding-bottom: 7px;
+    border-bottom: 2px solid var(--resume-accent-color);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+/* CREATIVE */
+
+.resume-paper[data-resume-template="creative"] header {
+    padding: 20px;
+    margin-bottom: 22px;
+    border-radius: 8px;
+    background: #fdf2f8;
+}
+
+.resume-paper[data-resume-template="creative"] h1 {
+    font-weight: 900;
+    letter-spacing: -0.045em;
+}
+
+.resume-paper[data-resume-template="creative"] h2 {
+    display: inline-block;
+    padding-bottom: 5px;
+    border-bottom: 3px solid var(--resume-accent-color);
+}
+
+.resume-paper[data-resume-template="creative"] section {
+    margin-bottom: 22px;
+}
+
+/* DEVELOPER */
+
+.resume-paper[data-resume-template="developer"] {
+    font-family: "Inter", Arial, sans-serif;
+}
+
+.resume-paper[data-resume-template="developer"] h1 {
+    font-weight: 800;
+    letter-spacing: -0.04em;
+}
+
+.resume-paper[data-resume-template="developer"] h2 {
+    padding: 7px 10px;
+    border-left: 4px solid var(--resume-accent-color);
+    background: #f1f5f9;
+    font-size: 1.05em;
+    text-transform: uppercase;
+}
+
+.resume-paper[data-resume-template="developer"] h3 {
+    font-weight: 750;
+}
+
+/* ELEGANT */
+
+.resume-paper[data-resume-template="elegant"] {
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+.resume-paper[data-resume-template="elegant"] header {
+    text-align: center;
+    padding-bottom: 18px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #d6d3d1;
+}
+
+.resume-paper[data-resume-template="elegant"] h1 {
+    font-weight: 500;
+    letter-spacing: 0.035em;
+}
+
+.resume-paper[data-resume-template="elegant"] h2 {
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-bottom: 1px solid #d6d3d1;
+    padding-bottom: 7px;
+}
+
+/* ACADEMIC */
+
+.resume-paper[data-resume-template="academic"] {
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+.resume-paper[data-resume-template="academic"] h1 {
+    font-weight: 700;
+    letter-spacing: 0;
+}
+
+.resume-paper[data-resume-template="academic"] h2 {
+    padding-bottom: 5px;
+    border-bottom: 1px solid #94a3b8;
+    font-size: 1.1em;
+}
+
+.resume-paper[data-resume-template="academic"] section {
+    margin-bottom: 20px;
+}
+
+/* ATS FRIENDLY */
+
+.resume-paper[data-resume-template="ats-friendly"] {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #111827;
+}
+
+.resume-paper[data-resume-template="ats-friendly"] h1 {
+    font-weight: 700;
+    letter-spacing: 0;
+}
+
+.resume-paper[data-resume-template="ats-friendly"] h2 {
+    padding-bottom: 5px;
+    border-bottom: 1px solid #374151;
+    font-size: 1.1em;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.resume-paper[data-resume-template="ats-friendly"] section {
+    margin-bottom: 15px;
+}
+
+/* SIDEBAR */
+
+.resume-paper[data-resume-template="sidebar"] {
+    border-top: 6px solid var(--resume-accent-color);
+}
+
+.resume-paper[data-resume-template="sidebar"] header {
+    padding: 16px;
+    margin-bottom: 20px;
+    background: #f1f5f9;
+    border-left: 4px solid var(--resume-accent-color);
+}
+
+.resume-paper[data-resume-template="sidebar"] h1 {
+    font-weight: 800;
+}
+
+.resume-paper[data-resume-template="sidebar"] h2 {
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--resume-accent-color);
+    text-transform: uppercase;
+    font-size: 1.05em;
+}
+
+/* BOLD */
+
+.resume-paper[data-resume-template="bold"] h1 {
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    text-transform: uppercase;
+}
+
+.resume-paper[data-resume-template="bold"] h2 {
+    padding: 8px 12px;
+    border-left: 5px solid var(--resume-accent-color);
+    background: #f8fafc;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.resume-paper[data-resume-template="bold"] h3 {
+    font-weight: 800;
+}
+
+/* PROFESSIONAL */
+
+.resume-paper[data-resume-template="professional"] header {
+    padding-bottom: 16px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--resume-accent-color);
+}
+
+.resume-paper[data-resume-template="professional"] h1 {
+    font-weight: 750;
+    letter-spacing: -0.025em;
+}
+
+.resume-paper[data-resume-template="professional"] h2 {
+    padding-bottom: 6px;
+    border-bottom: 1px solid #cbd5e1;
+    text-transform: uppercase;
+    letter-spacing: 0.055em;
+}
+
+/* MODERN TWO COLUMN */
+
+.resume-paper[data-resume-template="modern-two-column"] {
+    border-top: 5px solid var(--resume-accent-color);
+}
+
+.resume-paper[data-resume-template="modern-two-column"] header {
+    padding-bottom: 16px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.resume-paper[data-resume-template="modern-two-column"] h1 {
+    font-weight: 800;
+    letter-spacing: -0.04em;
+}
+
+.resume-paper[data-resume-template="modern-two-column"] h2 {
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--resume-accent-color);
+    font-size: 1.05em;
+    text-transform: uppercase;
+}
+
+
+/* =====================================
+   STRUCTURAL TEMPLATE LAYOUTS
+===================================== */
+
+/* Common layout item */
+
+.resume-layout-item {
+    min-width: 0;
+    break-inside: avoid;
+}
+
+/* SIDEBAR TEMPLATE */
+
+.resume-paper[data-resume-template="sidebar"] .resume-content {
+    grid-template-columns: minmax(0, 0.36fr) minmax(0, 0.64fr) !important;
+    column-gap: 22px;
+    align-items: start;
+}
+
+/* Sidebar sections */
+
+.resume-paper[data-resume-template="sidebar"] .resume-layout-item[data-section-id="skills"],
+.resume-paper[data-resume-template="sidebar"] .resume-layout-item[data-section-id="languages"],
+.resume-paper[data-resume-template="sidebar"] .resume-layout-item[data-section-id="certifications"],
+.resume-paper[data-resume-template="sidebar"] .resume-layout-item[data-section-id="references"] {
+    grid-column: 1;
+}
+
+/* Main content sections */
+
+.resume-paper[data-resume-template="sidebar"] .resume-layout-item[data-section-id="professionalSummary"],
+.resume-paper[data-resume-template="sidebar"] .resume-layout-item[data-section-id="experience"],
+.resume-paper[data-resume-template="sidebar"] .resume-layout-item[data-section-id="education"],
+.resume-paper[data-resume-template="sidebar"] .resume-layout-item[data-section-id="projects"],
+.resume-paper[data-resume-template="sidebar"] .resume-layout-item[data-section-id="awards"],
+.resume-paper[data-resume-template="sidebar"] .resume-layout-item[data-section-id="volunteerExperience"],
+.resume-paper[data-resume-template="sidebar"] .resume-layout-item[data-section-id="publications"] {
+    grid-column: 2;
+}
+
+/* Sidebar section appearance */
+
+.resume-paper[data-resume-template="sidebar"] .resume-layout-item[data-section-id="skills"] h2,
+.resume-paper[data-resume-template="sidebar"] .resume-layout-item[data-section-id="languages"] h2,
+.resume-paper[data-resume-template="sidebar"] .resume-layout-item[data-section-id="certifications"] h2,
+.resume-paper[data-resume-template="sidebar"] .resume-layout-item[data-section-id="references"] h2 {
+    font-size: 0.95em;
+}
+
+/* CUSTOM SECTIONS */
+
+.resume-paper[data-resume-template="sidebar"] .resume-layout-item[data-section-id^="custom-"] {
+    grid-column: 2;
+}
+
+/* TWO-COLUMN TEMPLATES */
+
+.resume-paper[data-resume-layout="two-column"] .resume-layout-item {
+    min-width: 0;
+}
+
+/* Header behavior */
+
+.resume-paper[data-resume-template="executive"] .resume-header,
+.resume-paper[data-resume-template="elegant"] .resume-header {
+    text-align: center;
+}
+
+.resume-paper[data-resume-template="executive"] .resume-header>div,
+.resume-paper[data-resume-template="elegant"] .resume-header>div {
+    justify-content: center;
+}
+
+.resume-paper[data-resume-template="creative"] .resume-header {
+    border-bottom: 0;
+}
+
+.resume-paper[data-resume-template="developer"] .resume-header {
+    border-bottom: 2px solid var(--resume-accent-color);
+}
+
+/* ATS-friendly print layout */
+
+.resume-paper[data-resume-template="ats-friendly"] .resume-content {
+    display: block !important;
+}
+
+.resume-paper[data-resume-template="ats-friendly"] .resume-layout-item {
+    width: 100%;
+}
+
+/* RESPONSIVE PREVIEW */
+
+@media screen and (max-width: 600px) {
+    .resume-paper[data-resume-template="sidebar"] .resume-content {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    .resume-paper[data-resume-template="sidebar"] .resume-layout-item {
+        grid-column: 1 !important;
+    }
+}
+
+
 
 /* HIGH CONTRAST */
 

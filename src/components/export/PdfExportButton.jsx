@@ -1,16 +1,24 @@
 
 import { useState } from "react";
 import { FileDown } from "lucide-react";
+import { useToast } from "../common/ToastProvider";
 
 export default function PdfExportButton({ onBeforeExport }) {
   const [isExporting, setIsExporting] = useState(false);
+  const { showToast } = useToast();
 
   const handleExport = () => {
+    if (isExporting) return;
+
     // Validate resume before exporting.
     if (onBeforeExport) {
       const validationPassed = onBeforeExport();
 
       if (!validationPassed) {
+        showToast(
+          "Please fix the validation errors before exporting your resume.",
+          "warning"
+        );
         return;
       }
     }
@@ -18,17 +26,20 @@ export default function PdfExportButton({ onBeforeExport }) {
     const resumeElement = document.getElementById("resume-paper");
 
     if (!resumeElement) {
-      alert("Resume preview could not be found.");
+      showToast(
+        "Resume preview could not be found.",
+        "error"
+      );
       return;
     }
 
     setIsExporting(true);
 
     const previousTitle = document.title;
-
     document.title = "SmartCV-Resume";
 
     let restored = false;
+    let fallbackTimer;
 
     const restoreTitle = () => {
       if (restored) return;
@@ -39,16 +50,36 @@ export default function PdfExportButton({ onBeforeExport }) {
       setIsExporting(false);
 
       window.removeEventListener("afterprint", restoreTitle);
+
+      if (fallbackTimer) {
+        window.clearTimeout(fallbackTimer);
+      }
     };
 
     window.addEventListener("afterprint", restoreTitle);
 
-    window.print();
+    try {
+      window.print();
 
-    // Fallback for browsers that don't fire afterprint.
-    window.setTimeout(() => {
+      showToast(
+        "Print dialog opened. Choose Save as PDF to download your resume.",
+        "success"
+      );
+
+      // Fallback for browsers that don't fire afterprint.
+      fallbackTimer = window.setTimeout(() => {
+        restoreTitle();
+      }, 30000);
+    } catch (error) {
+      console.error("PDF export error:", error);
+
       restoreTitle();
-    }, 30000);
+
+      showToast(
+        "Unable to open the PDF export dialog. Please try again.",
+        "error"
+      );
+    }
   };
 
   return (

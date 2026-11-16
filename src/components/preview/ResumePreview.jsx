@@ -615,6 +615,38 @@ export default function ResumePreview() {
   const showContactIcons = settings.showContactIcons;
   const showPageNumbers = settings.showPageNumbers;
 
+  // TEMPLATE-SPECIFIC LAYOUT CONFIGURATION
+
+  const twoColumnTemplates = [
+    "compact",
+    "creative",
+    "developer",
+    "sidebar",
+    "modern-two-column",
+  ];
+
+  const isTwoColumnLayout =
+    settings.columns === 2 ||
+    twoColumnTemplates.includes(settings.template);
+
+  const isSidebarTemplate = settings.template === "sidebar";
+
+  const contentGridStyle = isSidebarTemplate
+    ? {
+      display: "grid",
+      gridTemplateColumns: "minmax(0, 0.36fr) minmax(0, 0.64fr)",
+      columnGap: "24px",
+      alignItems: "start",
+    }
+    : {
+      display: "grid",
+      gridTemplateColumns: isTwoColumnLayout
+        ? "repeat(2, minmax(0, 1fr))"
+        : "minmax(0, 1fr)",
+      columnGap: "24px",
+      alignItems: "start",
+    };
+
   // SECTION VISIBILITY AND ORDER
 
   const visibleSections = [...(sections || [])]
@@ -857,7 +889,8 @@ export default function ResumePreview() {
       >
         {/* RESUME HEADER */}
 
-        <header className="mb-6 border-b border-slate-200 pb-5">
+        <header className="resume-header mb-6 border-b border-slate-200 pb-5"
+          data-template-header={settings.template}>
           <div className="flex flex-wrap items-start gap-4">
             {showProfileImage && personalInfo.profileImage && (
               <img
@@ -906,30 +939,40 @@ export default function ResumePreview() {
 
         <main
           className="resume-content min-w-0 flex-1"
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              settings.columns === 2
-                ? "repeat(2, minmax(0, 1fr))"
-                : "minmax(0, 1fr)",
-            columnGap: "24px",
-            alignItems: "start",
-          }}
+          data-resume-layout={
+            isSidebarTemplate
+              ? "sidebar"
+              : isTwoColumnLayout
+                ? "two-column"
+                : "single-column"
+          }
+          style={contentGridStyle}
         >
-          {visibleSections.map((section) =>
-            renderSection(section)
-          )}
+          {visibleSections.map((section) => (
+            <div
+              key={section.id}
+              className="resume-layout-item min-w-0"
+              data-section-id={section.id}
+            >
+              {renderSection(section)}
+            </div>
+          ))}
 
           {/* CUSTOM SECTIONS */}
 
           {resume.customSections?.map((section) => (
-            <ResumeSection
+            <div
               key={section.id}
-              title={section.title}
-              headingSize={headingSize}
+              className="resume-layout-item min-w-0"
+              data-section-id={`custom-${section.id}`}
             >
-              <CustomSectionContent section={section} />
-            </ResumeSection>
+              <ResumeSection
+                title={section.title}
+                headingSize={headingSize}
+              >
+                <CustomSectionContent section={section} />
+              </ResumeSection>
+            </div>
           ))}
         </main>
 

@@ -127,3 +127,88 @@ textarea:disabled {
     min-height: 42px;
   }
 }
+
+
+/* =========================================
+   SMARTCV - ACCESSIBILITY IMPROVEMENTS
+========================================= */
+
+/* Keyboard focus visibility */
+:focus-visible {
+  outline: 3px solid #6366f1 !important;
+  outline-offset: 3px;
+}
+
+/* Avoid unnecessary focus outlines for mouse users */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Accessible text selection */
+::selection {
+  background-color: #c7d2fe;
+  color: #1e1b4b;
+}
+
+/* Disabled controls */
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Accessible links */
+a {
+  text-underline-offset: 3px;
+}
+
+/* Minimum interactive target size */
+@media (max-width: 640px) {
+
+  button,
+  input[type="checkbox"],
+  input[type="radio"] {
+    min-height: 42px;
+    min-width: 42px;
+  }
+}
+
+/* Screen-reader-only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Respect high-contrast preferences */
+@media (prefers-contrast: more) {
+
+  button,
+  input,
+  select,
+  textarea,
+  a {
+    outline-offset: 3px;
+  }
+}

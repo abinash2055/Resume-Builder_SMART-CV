@@ -3,6 +3,8 @@ import { useRef, useState } from "react";
 import { Download, Upload } from "lucide-react";
 
 import { useResumeStore } from "../../store/resumeStore";
+import { useToast } from "../common/ToastProvider";
+
 import {
   createResumeJson,
   validateResumeJson,
@@ -11,6 +13,8 @@ import {
 export default function ResumeDataTransfer() {
   const fileInputRef = useRef(null);
   const [isImporting, setIsImporting] = useState(false);
+
+  const { showToast } = useToast();
 
   const handleExport = () => {
     try {
@@ -38,9 +42,18 @@ export default function ResumeDataTransfer() {
       link.remove();
 
       URL.revokeObjectURL(url);
+
+      showToast(
+        "Your resume backup was exported successfully.",
+        "success"
+      );
     } catch (error) {
       console.error("Resume export failed:", error);
-      alert(error.message || "Unable to export resume.");
+
+      showToast(
+        error.message || "Unable to export resume.",
+        "error"
+      );
     }
   };
 
@@ -80,14 +93,18 @@ export default function ResumeDataTransfer() {
       store.updateSettings(importedData.settings);
       store.replaceSections(importedData.sections);
 
-      alert("Your SmartCV resume was imported successfully.");
+      showToast(
+        "Your SmartCV resume was imported successfully.",
+        "success"
+      );
     } catch (error) {
       console.error("Resume import failed:", error);
 
-      alert(
+      showToast(
         error instanceof SyntaxError
           ? "The selected file contains invalid JSON."
-          : error.message || "Unable to import resume."
+          : error.message || "Unable to import resume.",
+        "error"
       );
     } finally {
       setIsImporting(false);

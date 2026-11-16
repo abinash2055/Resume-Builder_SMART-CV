@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 import { useResumeStore } from "../store/resumeStore";
+import { useToast } from "../components/common/ToastProvider";
 
 import {
   personalInfoSchema,
@@ -210,6 +211,8 @@ export default function ResumeEditor() {
     (state) => state.resume
   );
 
+  const { showToast } = useToast();
+
   // -------------------------------------
   // VALIDATION STATE
   // -------------------------------------
@@ -351,6 +354,19 @@ export default function ResumeEditor() {
     setIsValid(validationPassed);
 
     setShouldScrollToSummary(!validationPassed);
+
+    if (validationPassed) {
+      showToast(
+        "Your resume passed all validation checks!",
+        "success"
+      );
+    } else {
+      showToast(
+        `Found ${errors.length} validation ${errors.length === 1 ? "error" : "errors"
+        }. Please review your resume.`,
+        "warning"
+      );
+    }
 
     return validationPassed;
   };
