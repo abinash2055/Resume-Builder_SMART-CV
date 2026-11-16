@@ -8,7 +8,7 @@ import Footer from "./components/layout/Footer";
 
 import Dashboard from "./pages/Dashboard";
 import ResumeEditor from "./pages/ResumeEditor";
-import TemplateGallery from "./pages/TemlateGallery";
+import TemplateGallery from "./pages/TemplateGallery";
 import NotFound from "./pages/NotFound";
 
 function AppLayout() {
