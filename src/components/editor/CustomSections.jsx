@@ -123,6 +123,7 @@ export default function CustomSections() {
         <input
           type="text"
           value={newTitle}
+          maxLength={100}
           onChange={(e) => setNewTitle(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") handleAddSection();
@@ -169,6 +170,7 @@ export default function CustomSections() {
                     <div className="flex min-w-0 flex-1 gap-2">
                       <input
                         value={editingTitle}
+                        maxLength={100}
                         onChange={(e) =>
                           setEditingTitle(e.target.value)
                         }
@@ -247,6 +249,7 @@ export default function CustomSections() {
                               )
                             }
                             placeholder="Entry title"
+                            maxLength={200}
                             className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium outline-none focus:border-indigo-500"
                           />
 
@@ -262,6 +265,7 @@ export default function CustomSections() {
                               )
                             }
                             placeholder="Entry description"
+                            maxLength={3000}
                             className="w-full resize-y rounded-md border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-500"
                           />
                         </div>
@@ -292,6 +296,7 @@ export default function CustomSections() {
                       )
                     }
                     placeholder="New entry title"
+                    maxLength={200}
                     className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500"
                   />
 
@@ -306,6 +311,7 @@ export default function CustomSections() {
                       )
                     }
                     placeholder="Description (optional)"
+                    maxLength={3000}
                     className="w-full resize-y rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500"
                   />
 

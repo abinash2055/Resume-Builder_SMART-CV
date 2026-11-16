@@ -75,7 +75,7 @@ const optionalUrl = z
 
 // -------------------------------------
 // DATE VALIDATION
-// Supports YYYY-MM and YYYY-MM-DD.
+// Supports YYYY-MM and YYYY-MM-DD
 // -------------------------------------
 
 const optionalDate = z
@@ -105,7 +105,7 @@ const optionalDate = z
       );
     }
 
-    return Number(parts[0]) >= 1;
+    return true;
   }, "Please enter a valid date.")
   .optional();
 
@@ -302,9 +302,7 @@ export const ENTRY_SCHEMAS = {
 // -------------------------------------
 
 const normalizeDate = (date) => {
-  if (!date || typeof date !== "string") {
-    return "";
-  }
+  if (!date) return "";
 
   return date.length === 7
     ? `${date}-01`
@@ -312,7 +310,7 @@ const normalizeDate = (date) => {
 };
 
 // -------------------------------------
-// DATE RANGE VALIDATION
+// GENERAL DATE RANGE VALIDATION
 // -------------------------------------
 
 export const validateDateRange = (
@@ -344,7 +342,7 @@ export const validateDateRange = (
 };
 
 // -------------------------------------
-// CERTIFICATION DATE VALIDATION
+// CERTIFICATION DATE RANGE VALIDATION
 // -------------------------------------
 
 export const validateCertificationDateRange = (
@@ -359,10 +357,10 @@ export const validateCertificationDateRange = (
     };
   }
 
-  const normalizedIssueDate = normalizeDate(issueDate);
-  const normalizedExpiryDate = normalizeDate(expiryDate);
+  const normalizedIssue = normalizeDate(issueDate);
+  const normalizedExpiry = normalizeDate(expiryDate);
 
-  if (normalizedExpiryDate < normalizedIssueDate) {
+  if (normalizedExpiry < normalizedIssue) {
     return {
       valid: false,
       message: "Expiry date cannot be before issue date.",
@@ -406,12 +404,11 @@ export const validateSectionEntry = (
     });
   }
 
-  // Employment, education and volunteer date validation
+  // Experience, education and volunteer date validation
   if (
-    "startDate" in entry &&
-    "endDate" in entry &&
-    optionalDate.safeParse(entry.startDate).success &&
-    optionalDate.safeParse(entry.endDate).success
+    ["startDate", "endDate"].every(
+      (field) => field in entry
+    )
   ) {
     const dateRange = validateDateRange(
       entry.startDate,
@@ -424,21 +421,16 @@ export const validateSectionEntry = (
     }
   }
 
-  // Certification issue/expiry date validation
-  if (
-    sectionName === "certifications" &&
-    optionalDate.safeParse(entry.issueDate).success &&
-    optionalDate.safeParse(entry.expiryDate).success
-  ) {
-    const certificationDateRange =
-      validateCertificationDateRange(
-        entry.issueDate,
-        entry.expiryDate,
-        entry.noExpiry
-      );
+  // Certification date validation
+  if (sectionName === "certifications") {
+    const dateRange = validateCertificationDateRange(
+      entry.issueDate,
+      entry.expiryDate,
+      entry.noExpiry
+    );
 
-    if (!certificationDateRange.valid) {
-      errors.expiryDate = certificationDateRange.message;
+    if (!dateRange.valid) {
+      errors.expiryDate = dateRange.message;
     }
   }
 

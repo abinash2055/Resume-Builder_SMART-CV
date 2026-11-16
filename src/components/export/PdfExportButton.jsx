@@ -2,10 +2,19 @@
 import { useState } from "react";
 import { FileDown } from "lucide-react";
 
-export default function PdfExportButton() {
+export default function PdfExportButton({ onBeforeExport }) {
   const [isExporting, setIsExporting] = useState(false);
 
   const handleExport = () => {
+    // Validate resume before exporting.
+    if (onBeforeExport) {
+      const validationPassed = onBeforeExport();
+
+      if (!validationPassed) {
+        return;
+      }
+    }
+
     const resumeElement = document.getElementById("resume-paper");
 
     if (!resumeElement) {
@@ -19,9 +28,16 @@ export default function PdfExportButton() {
 
     document.title = "SmartCV-Resume";
 
+    let restored = false;
+
     const restoreTitle = () => {
+      if (restored) return;
+
+      restored = true;
+
       document.title = previousTitle;
       setIsExporting(false);
+
       window.removeEventListener("afterprint", restoreTitle);
     };
 
@@ -31,9 +47,7 @@ export default function PdfExportButton() {
 
     // Fallback for browsers that don't fire afterprint.
     window.setTimeout(() => {
-      if (document.title === "SmartCV-Resume") {
-        restoreTitle();
-      }
+      restoreTitle();
     }, 30000);
   };
 
@@ -42,7 +56,7 @@ export default function PdfExportButton() {
       type="button"
       onClick={handleExport}
       disabled={isExporting}
-      title="Open the print dialog and select Save as PDF."
+      title="Validate your resume and open the print dialog to save as PDF."
       className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-wait disabled:opacity-60"
     >
       <FileDown size={16} />
